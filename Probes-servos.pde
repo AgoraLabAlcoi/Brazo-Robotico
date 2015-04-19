@@ -20,9 +20,9 @@ ControlP5 cp5;
 Button h;
 Slider2D s;
 
-float angleA = 0;
-float angleB = 0;
-float angleY = 0;
+float angleA ;
+float angleB ;
+float angleY ;
 
 String textValue = "";
 void setup() {
@@ -30,7 +30,7 @@ void setup() {
   PFont font = createFont("arial",20);
   println(Arduino.list());
   
-  arduino = new Arduino(this, Arduino.list()[5], 57600);
+  arduino = new Arduino(this, Arduino.list()[0], 57600);
   cp5 = new ControlP5(this);
   s = cp5.addSlider2D("wave")
          .setPosition(30,40)
@@ -95,7 +95,7 @@ void draw() {
  text("Grados Servo 1: ", 450,60);
  text( angleA, 550,60);
  text("Grados Servo 2: ", 450,80);
- text( parseInt(angleB), 550,80);
+ text( angleB, 550,80);
  text("Grados Servo 3: ", 450,100);
  text( angleY, 550,100);
  
@@ -113,32 +113,21 @@ public void ir(int theValue) {
      
      int d1 = DIS - 9;
      
-     angleB = acos((sq(14)+sq(12)-sq(d1)-sq(ALTU))/(2*(14*12)));
-     angleA = atan(ALTU/d1) + asin((B* sin(angleB))/sqrt(sq(d1)+sq(ALTU)));
+     float angleBrad = acos((sq(14)+sq(12)-sq(d1) - sq(ALTU))/(2*(14*12)));
+     angleB = (angleBrad * 180)/ PI;
+     
+     float angleA1 = atan(ALTU/d1);
+     float angleA2 = asin((12 * sin(angleB))/sqrt(sq(d1)+sq(ALTU)));
+     
+     angleA = ((abs(angleA1) + angleA2) * 180)/ PI;
+     
      angleY = 360 - (angleA + angleB);
-     
-     
+  
      arduino.servoWrite(7, parseInt(angleA));
      arduino.servoWrite(4, parseInt(angleB));
-     
-     
- 
-     
+   
      //h.setCaptionLabel("ok");
  }
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 a list of all methods available for the Slider2D Controller
 use ControlP5.printPublicMethodsFor(Slider2D.class);
